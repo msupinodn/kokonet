@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import sys, os, etcd3, json, subprocess
@@ -29,12 +29,12 @@ def change_addr(etcd, hostip, containerif, old_vals, new_vals):
     (nsname, meta) = etcd.get('kokonet/netns/%s/%s'%(hostip, containerid))
 
     for i in remove_addrs:
-        cmd = "/app/koro netns /host%s address del %s dev %s"%(nsname, i, ifname)
-        ret = subprocess.call(cmd.split())
+        cmd = ["/app/koro", "netns", "/host%s" % nsname, "address", "del", str(i), "dev", str(ifname)]
+        ret = subprocess.call(cmd)
         print("cmd:", cmd, ret)
     for i in new_addrs:
-        cmd = "/app/koro netns /host%s address add %s dev %s"%(nsname, i, ifname)
-        ret = subprocess.call(cmd.split())
+        cmd = ["/app/koro", "netns", "/host%s" % nsname, "address", "add", str(i), "dev", str(ifname)]
+        ret = subprocess.call(cmd)
         print("cmd:", cmd, ret)
 
 if __name__ == '__main__':

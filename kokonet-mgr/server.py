@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os, requests, etcd3, json, sys
@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify, json, url_for, abort, Response
 from flask import redirect, render_template
 
 app = Flask(__name__)
-app.debug = True
+app.debug = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
 pp = pprint.PrettyPrinter(indent=2)
 
 '''
@@ -142,9 +142,9 @@ def get_status():
     sys.stdout.flush()
     return json.dumps({'error': 'OK'})
 
-if app.debug:
+if app.debug and os.environ.get("WERKZEUG_DEBUG", "false").lower() == "true":
     from werkzeug.debug import DebuggedApplication
-    app.wsgi_app = DebuggedApplication(app.wsgi_app, True)
+    app.wsgi_app = DebuggedApplication(app.wsgi_app, evalex=False)
 
 init()
 

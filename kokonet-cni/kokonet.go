@@ -214,10 +214,10 @@ func getNetworkEndpointInfo(isAdd bool, controllerURI string,
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
-	defer resp.Body.Close()
 	if err != nil {
-		return repl, fmt.Errorf("Client send request failed")
+		return repl, fmt.Errorf("client send request failed: %w", err)
 	}
+	defer resp.Body.Close()
 	if err := json.NewDecoder(resp.Body).Decode(&repl); err != nil {
 		return repl, fmt.Errorf("Json decode error")
 	}
@@ -333,7 +333,8 @@ func delNetNS(args *skel.CmdArgs, conf *PluginConf) error {
         }
         defer cli.Close() // make sure to close the client
 
-        ctx, _ := context.WithTimeout(context.Background(), etcdRequestTimeout)
+        ctx, cancel := context.WithTimeout(context.Background(), etcdRequestTimeout)
+	defer cancel()
 	_, err = cli.Delete(ctx, fmt.Sprintf("kokonet/netns/%s/%s", conf.SrcIpAddress, args.ContainerID))
 
 	return err

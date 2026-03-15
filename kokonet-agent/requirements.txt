@@ -1,8 +1,5 @@
-enum34==1.1.6
-etcd3==0.7.0
-futures==3.2.0
-grpcio==1.8.1
-monotonic==1.4
-protobuf==3.5.0.post1
-six==1.11.0
-tenacity==4.8.0
+etcd3==0.12.0
+grpcio==1.62.3
+protobuf==4.25.5
+six==1.16.0
+tenacity==8.5.0

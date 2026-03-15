@@ -1,20 +1,18 @@
 # run:
 # docker run -e VPP_CONTROLLER_URL=<vpp controller ip> -e VPP_VTEP_IP=<vpp ip>
-FROM alpine:3.6
+FROM python:3.12-alpine
 
 WORKDIR /app
-#ONBUILD COPY . /app
+COPY requirements.txt /app/
+
+RUN apk add --no-cache --update \
+	build-base \
+  && pip install --no-cache-dir -r /app/requirements.txt \
+  && apk del build-base
+
 COPY . /app
 
-RUN apk add --update \
-	python \
-	python-dev \
-	py-pip \
-	build-base \
-  && pip install --upgrade pip \
-  && pip install -r /app/requirements.txt \
-  && rm -rf /var/cache/apk/*
-
+RUN addgroup -S kokonet && adduser -S kokonet -G kokonet
 
 EXPOSE 80
-CMD ["/usr/bin/gunicorn", "--log-file", "-", "--bind", "0.0.0.0:80", "server:app"]
+CMD ["/usr/local/bin/gunicorn", "--log-file", "-", "--bind", "0.0.0.0:80", "server:app"]
